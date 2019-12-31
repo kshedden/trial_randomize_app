@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .Project.Name }}<br>
+      <b>Treatment groups:</b> {{ .ProjectView.GroupNames }} ({{.NumGroups}} groups)<br>
+      <b>Sampling rates:</b> {{ .ProjectView.SamplingRates }}
+      <br>
+      <br>
+      {{ if .AnyVars }}
+      <p><b>Important note:</b> You entered the following data for a
+	subject who is about to be assigned to a treatment group.  Check
+	this information carefully before proceeding.
+      {{ else }}
+      <p><b>Important note:</b> After pressing "Confirm data" the
+      assignment will be final.
+      {{ end }}
+      <br>
+      <form action="/assign_treatment" method="post">
+	{{ if .AnyVars }}
+	<div class="outer">
+	  <div class="table1">
+            <div class="title">
+              Subject data
+            </div>
+            <table class="hor-minimalist-b">
+	      <col width="10%"/>
+              <col width="90%"/>
+              <tbody>
+		{{ range .FV }}
+		<tr>
+		  <td>
+		    <b>{{ index . 0 }}</b>
+		  </td>
+		  <td>
+		    {{ index . 1 }}
+		  </td>
+		</tr>
+		{{ end }}
+	      </tbody>
+	    </table>
+	  </div>
+	</div>
+	<br>
+	{{ end }}
+	<input type="submit" value="Confirm data">
+	<input type="hidden" name="pkey" value="{{.Pkey}}">
+	<input type="hidden" name="fields" value="{{.Fields}}">
+	<input type="hidden" name="values" value="{{.Values}}">
+	<input type="hidden" name="subject_id" value="{{.SubjectId}}">
+      </form>
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Cancel and return to project</a><br>
+    </div>
+  </body>
+</html>

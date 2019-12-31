@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .ProjectName }}<br><br>
+      <form action="/edit_sharing_confirm" method="post">
+	{{ if .AnySharedUsers }}
+	The project will no longer be shared with anyone who is selected below.<br><br>
+	<div class="table1">
+	  <table class="hor-minimalist-b">
+	    <col width="10%"/>
+	    <col width="90%"/>
+	    <thead>
+              <tr>
+		<th scope="col">Delete</th>
+		<th scope="col">Name</th>
+              </tr>
+	    </thead>
+	    <tbody>
+	      {{ range .SharedUsers }}
+              <tr>
+		<td><input type="checkbox" value="{{.}}" name="remove_users"/>
+		</td>
+		<td>{{.}}</td>
+              </tr>
+              {{ end }}
+	    </tbody>
+	  </table>
+	</div>
+	{{ else }}
+	This project is not currently shared.
+	{{ end }}
+	{{ if .AnySharedUsers }}
+	<p>Share with these additional people:<br>
+	  {{ else }}
+	<p>Share with these people:<br>
+	  {{ end }}
+	  <input type="text" name="additional_people" size=60>
+	</p>
+	<input type="submit" value="Update sharing">
+	<input type="hidden" name="pkey" value="{{.Pkey}}">
+      </form>
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Cancel and return to project dashboard</a>
+      <br><br>
+    </div>
+  </body>
+</html>

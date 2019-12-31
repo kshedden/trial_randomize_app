@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .Name }}
+      <br><br>
+      <form action="/create_project_step4" method="post">
+	Enter the number of treatment groups:
+	<input type="number" name="numgroups" min=2 max=500 value=2>
+	<br><br>
+	<input type="submit" value="Next">
+	<input type="hidden" name="project_name" value="{{ .Name }}">
+	<input type="hidden" name="store_rawdata" value="{{ .StoreRawData }}">
+	<br><br>
+      </form>
+      <a href="/dashboard">Cancel and return to dashboard</a>
+    </div>
+  </body>
+</html>

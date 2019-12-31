@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <form action="/copy_project_completed" method="get">
+	<br>The copied project will be owned by you and will not be
+	shared with anyone.
+	<br><br>
+	Enter a new name for the copy of <b>{{ .ProjectName }}</b>:
+	<br><br>
+	  <input type="text" name="new_project_name" size=30>
+	  <input type="hidden" name="pkey" value="{{.Pkey}}">
+	  <input type="submit" value="Copy project">
+      </form>
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Cancel and return to project dashboard</a>
+      <br><br>
+    </div>
+  </body>
+</html>

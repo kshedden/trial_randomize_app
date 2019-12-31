@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <p>
+	The variable information that you entered does not conform to
+	our requirements.  Please confirm that:
+	<ul>
+	  <li>Each variable has a distinct name</li>
+	  <li>Each variable has at least two levels</li>
+	  <li>The levels of each variable are distinct labels</li>
+	</ul>
+      </p>
+
+      <form action="/create_project_step7" method="post">
+	<input type="submit" value="Enter variable information again">
+	<input type="hidden" name="numgroups" value="{{.NumGroups}}">
+	<input type="hidden" name="numvar" value="{{.NumVar}}">
+	<input type="hidden" name="group_names" value="{{.GroupNames}}">
+	<input type="hidden" name="project_name" value="{{ .Name }}">
+	<input type="hidden" name="store_rawdata" value="{{ .StoreRawData }}">
+	<input type="hidden" name="rates" value="{{ .SamplingRates }}">
+      </form>
+      <br>
+      <a href="/dashboard">Cancel and return to dashboard</a><br><br><br>
+    </div>
+  </body>
+</html>

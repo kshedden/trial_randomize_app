@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <form action="/confirm_add_comment" method="post">
+      <b>Project name:</b> {{ .PV.Name }}<br>
+      <br>
+      Add a new comment for this project:<br>
+      <textarea name="comment_text" rows="15" cols="60"></textarea>
+      <br>
+      <input type="submit" value="Add comment to the project">
+      <input type="hidden" name="pkey" value="{{.Pkey}}">
+      </form>
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Cancel and return to project</a><br>
+    </div>
+  </body>
+</html>

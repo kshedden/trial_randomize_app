@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon"> 
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon"> 
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .Name }}
+      <br>
+      <br>
+      <div class="outer">
+	<div class="table1">
+          <div class="title">
+            Variables
+          </div>
+          <table class="hor-minimalist-b">
+            <tbody>
+	      {{ if .VAB }}
+	      {{ range .VA }}
+              <tr>
+		<td>Name</td><td>{{ .Name }}</td>
+	      </tr>
+	      {{ end }}
+	      {{ else }}
+	      <tr>&nbsp;</tr>
+	      <tr><td>This project currently has no variables.</td></tr>
+	      {{ end }}
+	    </tbody>
+	  </table>
+	</div>
+      </div>
+      <br>
+      <form action="/add_variable" method="post">
+	<input type="hidden" name="pkey" value="{{ .Pkey }}">
+	<input type="submit" value="Add variable">     
+      </form>
+      <br>
+      <a href="/dashboard">Cancel and return to dashboard</a>
+    </div>
+  </body>
+</html>

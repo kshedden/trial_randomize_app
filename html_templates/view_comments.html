@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .PV.Name }}<br>
+      <br>
+      {{ if .AnyComments }}
+      <div class="outer">
+	<div class="table1">
+          <div class="title">
+            Project comments
+          </div>
+          <table class="hor-minimalist-b">
+            <tbody>
+	      {{ range .PV.Comments }}
+	      <tr>
+		<td>
+		  <em>Comment made by {{ .Person }} on {{ .Date }} at {{ .Time }}</em>:
+		  <br><br>
+		  <div style="overflow:auto">
+		    {{ range .Comment }}
+		    <p>{{ . }}
+		    {{ end }}
+		  </div>
+		</td>
+	      </tr>
+	      {{ end }}
+	    </tbody>
+	  </table>
+	</div>
+      </div>
+      {{ else }}
+      There are no comments for this project.<br>
+      {{ end }}
+      <br>
+      <a href="/add_comment?pkey={{.Pkey}}">Add a comment</a><br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Return to project</a><br>
+      <br>
+    </div>
+  </body>
+</html>

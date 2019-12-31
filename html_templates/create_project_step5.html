@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .Name }}<br>
+      <b>Treatment groups:</b> {{ .GroupNames }} ({{.NumGroups}} groups)
+      <br>
+      <p>Enter a sampling rate for each treatment group.  For example,
+      a treatment group with sampling rate 2 will have approximately
+      twice as many assignments as a treatment group with sampling
+      rate 1.  Each sampling rate should be a positive number.  Leave
+      the sampling rates at their default value of "1" if you want
+      approximately equal numbers of subjects to be assigned to each
+      treatment group.<br>
+	<br>
+      <form action="/create_project_step6" method="post">
+	<div class="outer">
+	  <div class="table1">
+            <div class="title">
+	      Sampling rates
+            </div>
+            <table class="hor-minimalist-b">
+	      <tbody>
+		{{ range .GroupNames_arr }}
+		<tr>
+		  <td>
+		    Group '{{.}}' sampling rate
+		  </td>
+		  <td>
+		    <input type="text" name="rate{{.}}" size=10 value="1">
+		  </td>
+		</tr>
+		{{ end }}
+	      </tbody>
+	    </table>
+	  </div>
+	</div>
+	<br>
+	<input type="submit" value="Next">
+	<input type="hidden" name="project_name" value="{{ .Name }}">
+	<input type="hidden" name="numgroups" value="{{ .NumGroups }}">
+	<input type="hidden" name="group_names" value="{{ .GroupNames }}">
+	<input type="hidden" name="store_rawdata" value="{{ .StoreRawData }}">
+      </form>
+      <br>
+      <a href="/dashboard">Cancel and return to dashboard</a>
+    </div>
+  </body>
+</html>

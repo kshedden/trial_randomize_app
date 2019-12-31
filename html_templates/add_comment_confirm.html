@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>  
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon"> 
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon"> 
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <b>Project name:</b> {{ .PV.Name }}<br>
+      <br>
+      Your comment has been added.
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Return to project</a><br>
+      <a href="/dashboard">Return to your dashboard</a>
+    </div>
+  </body>
+</html>

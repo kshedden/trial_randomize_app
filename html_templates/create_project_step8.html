@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .Name }}<br>
+      <b>Treatment groups:</b> {{ .GroupNames }} ({{.NumGroups}} groups)<br>
+      <b>Sampling rates:</b> {{ .SamplingRates }}
+      <br>
+      <p>Select a value between 1 and 10 to control the level of
+	determinism in the treatment assignments.  Higher values will
+	generally result in better balance, at the risk of greater
+	predictability of the treatment assignments.
+	<form action="/create_project_step9" method="post">
+	  <input type="number" min="1" max="10" value="5" size="5" name="bias">
+	  <input type="submit" value="Next">
+	  <input type="hidden" name="project_name" value="{{ .Name }}">
+	  <input type="hidden" name="group_names" value="{{ .GroupNames }}">
+	  <input type="hidden" name="numvar" value="{{ .Numvar }}">
+	  <input type="hidden" name="numgroups" value="{{ .NumGroups }}">
+	  <input type="hidden" name="variables" value="{{ .Variables }}">
+	  <input type="hidden" name="store_rawdata" value="{{ .StoreRawData }}">
+	  <input type="hidden" name="rates" value="{{ .SamplingRates }}">
+	</form>
+	<br>
+	<a href="/dashboard">Cancel and return to dashboard</a>
+    </div>
+  </body>
+</html>

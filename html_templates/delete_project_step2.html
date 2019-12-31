@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      {{ if .Nokey }}
+      <br>
+      No project was selected to delete.
+      <br><br>
+      <a href="/dashboard">Return to dashboard</a>
+      {{ else }}
+      <p>Are you sure that you want to delete your project named "{{.ProjectName}}"?  There is no way to recover the project after it has been deleted.
+
+      <form action="/delete_project_step3" method="post">
+	<input type="submit" value="Delete project">
+	<input type="hidden" name="Pkey" value="{{.Pkey}}">
+      </form>
+      <br>
+      <a href="/dashboard">Cancel and return to dashboard</a>
+      <br>
+      {{ end }}
+    </div>
+  </body>
+</html>

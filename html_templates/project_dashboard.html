@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .ProjView.Name }}<br>
+      <b>Treatment groups:</b> {{ .ProjView.GroupNames }} ({{.NumGroups}} groups)<br>
+      <b>Sampling rates:</b> {{ .ProjView.SamplingRates }}<br>
+      <b>Determinism:</b> {{ .ProjView.Bias }}<br>
+      <b>Store complete data:</b> {{ .StoreRawData }}<br>
+      <b>Owner:</b> {{ .Owner }}<br>
+      <b>Open for enrollment:</b> {{ .Open }}<br>
+      {{ if .ShowEditSharing }}
+      <b>Shared with:</b> {{ .Sharing }}<br>
+      {{ end }}
+      <br>
+      {{ if .AnyVars }}
+      <div class="outer">
+	<div class="table1">
+          <div class="title">
+            Variables
+          </div>
+          <table class="hor-minimalist-b">
+	    <thead>
+	      <tr>
+		<th scope="col">Name</th>
+		<th scope="col">Levels</th>
+		<th scope="col">Weight</th>
+	      </tr>
+	    </thead>
+            <tbody>
+	      {{ range .ProjView.Variables }}
+	      <tr>
+		<td>
+		  {{.Name}}
+		</td>
+		<td>
+		  {{.Levels}}
+		</td>
+		<td>
+		  {{.Weight}}
+		</td>
+	      </tr>
+	      {{ end }}
+	    </tbody>
+	  </table>
+	</div>
+      </div>
+      {{ end }}
+      <br>
+      <a href="/assign_treatment_input?pkey={{.Pkey}}">Assign a treatment for this trial</a><br>
+      <a href="/view_statistics?pkey={{.Pkey}}">View enrollment statistics for this trial</a><br>
+      {{ if .ShowEditSharing }}
+      <a href="/edit_sharing?pkey={{.Pkey}}">Edit sharing</a><br>
+      {{ end }}
+      <a href="/view_comments?pkey={{.Pkey}}">View comments</a><br>
+      <a href="/add_comment?pkey={{.Pkey}}">Add a comment</a><br>
+      <a href="/openclose_project?pkey={{.Pkey}}">Open/close enrollment</a><br>
+      <a href="/view_complete_data?pkey={{.Pkey}}" target="_blank">View complete data</a><br>
+      <a href="/edit_assignment?pkey={{.Pkey}}">Edit a group assignment</a><br>
+      <a href="/remove_subject?pkey={{.Pkey}}">Remove a subject</a><br>
+      <a href="/copy_project?pkey={{.Pkey}}">Copy this project</a><br>
+      <a href="/dashboard">Return to dashboard</a>
+      <br><br><br><br>
+    </div>
+  </body>
+</html>

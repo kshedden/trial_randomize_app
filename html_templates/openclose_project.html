@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .ProjectName }}<br>
+      <br>
+      <form action="/openclose_completed" method="post">
+	{{ if .Open }}
+	<input type="checkbox" name="open" value="open" checked>
+	{{ else }}
+	<input type="checkbox" name="open" value="open">
+	{{ end }}
+	Allow subjects to be enrolled into this project.
+	<br>
+	<br>
+	<input type="submit" value="Update">
+	<input type="hidden" name="pkey" value="{{.Pkey}}">
+      </form>
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Return to project without changes</a><br><br>
+    </div>
+  </body>
+</html>

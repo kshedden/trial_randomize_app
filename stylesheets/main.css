@@ -1,0 +1,199 @@
+html,body {
+    height: 100vh;
+    min-height: 100vh;
+}
+
+body {
+    font-family: Verdana, Helvetica, sans-serif;
+    color: #231F20;
+    background-color: #fff;
+    font-size: 11px;
+    padding: 0px;
+    margin: 0;
+    text-align: center;
+    clear: both;
+}
+
+div.mcol {
+    width: 800px;
+    height: 100vh;
+    min-height: 100vh;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1px;
+    background-color: #FFF;
+    clear: both;
+}
+
+#content {
+    width: 100%;
+    height: 100vh;
+    min-height: 100vh;
+    font-size: 14px;
+    background-color: #FFF;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+}
+
+#login {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #647087;
+    border-right: 0px;
+    border-left: 0px;
+    border-top: 3px;
+    padding-bottom: 2px;
+    text-align: left;
+    font-family: Verdana, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+#banner {
+    width: 100%;
+    background-color: #00274c;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+}
+
+div.tinput  {
+    vertical-align:middle;
+    padding:0px;
+    margin:0;
+    padding-top:4px;
+}
+
+
+p.p1 { width:700px;font-size:200% }
+
+p.p2 { width:700px;font-size:120% }
+
+p.p3 { width:700px;font-size:100% }
+
+p.p3 { vertical-align:middle }
+
+textarea.t1 { vertical-align:middle }
+
+#form1 {
+    align:left;
+}
+
+#form1 label{
+    display:block;
+    font-weight:bold;
+    text-align:right;
+    overflow:hidden;
+    white-space:nowrap;
+    float:left;
+}
+
+div.outer {
+    border: 1px solid #647087;
+    background-color: #fff;
+    padding: 5px;
+    padding-bottom: 0px;
+    width: 100%;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    clear: both;
+}
+
+div.question-outer {
+    border: 0px solid #647087;
+    background-color: #fff;
+    padding: 5px;
+    padding-bottom: 0px;
+    width: 700px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    clear: both;
+}
+
+div.title {
+    border: 1px solid #647087;
+    background-color: #647087;
+    color: #fff;
+    font-weight: bold;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    padding: 5px;
+    margin-top: 0em;
+    clear: both;
+}
+
+div.question {
+    background-color: #fff;
+    color: #000;
+    font-weight: normal;
+    padding: 5px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    margin-top: 0em;
+    border-bottom: 0px;
+    clear: both;
+}
+
+textarea.taw {
+    width:700px;
+    padding-top:0px;
+    padding-bottom:0px;
+    margin-top:0px;
+}
+
+div.table1 {
+    background-color: #fff;
+    padding: 0px;
+    margin-top: 0em;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    clear: both;
+}
+
+table.hor-minimalist-b
+{
+        font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+        font-size: 12px;
+        background: #fff;
+	width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+}
+
+table.hor-minimalist-b th
+{
+        font-size: 14px;
+        font-weight: strong;
+        color: #000;
+        padding: 8px 6px;
+        border-bottom: 2px solid #000000;
+}
+table.hor-minimalist-b tr
+{
+        border-top: 0;
+        color: #000;
+        padding: 6px 8px;
+}
+table.hor-minimalist-b tr:first-child td
+{
+        border-top: 0;
+        color: #000;
+        padding: 6px 8px;
+}
+table.hor-minimalist-b td
+{
+        border-bottom: thin solid #647087;
+        padding: 6px 8px;
+}
+
+table.hor-minimalist-b tr:last-child td
+{
+        border-bottom: 0;
+        color: #000;
+        padding: 6px 8px;
+}

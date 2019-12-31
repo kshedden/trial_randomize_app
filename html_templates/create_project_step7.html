@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .Name }}<br>
+      <b>Treatment groups:</b> {{ .GroupNames }} ({{.NumGroups}} groups)<br>
+      <b>Sampling rates:</b> {{ .SamplingRates }}
+      <br>
+      {{ if .AnyVars }}
+      <p>Use this page to define all variables that will be balanced
+      among treatment groups using the minimization algorithm.  Each
+      variable name and variable level should consist of standard
+      alphanumeric symbols, and should not contain spaces or commas.
+      The levels should be entered as a comma separated list of labels
+      for the different levels of a variable.  For example, if the
+      variable name is "Gender", the levels could be entered as
+      "Female,Male".  The "Weight" parameter (a positive number)
+      determines how much influence each variable has in determining
+      the group assignments (variables with greater weight have
+      greater influence).<br>
+      <form action="/create_project_step8" method="post">
+	<div class="outer">
+	  <div class="table1">
+            <div class="title">
+              Variables
+            </div>
+            <table class="hor-minimalist-b">
+	      <thead>
+		<tr>
+		  <th scope="col">Name</th>
+		  <th scope="col">Levels</th>
+		  <th scope="col">Weight</th>
+		</tr>
+	      </thead>
+              <tbody>
+		{{ range .IX }}
+		<tr>
+		  <td>
+		    <input type="text" name="name{{.}}" size=20 value="">
+		  </td>
+		  <td>
+		    <input type="text" name="levels{{.}}" size=30 value="">
+		  <td>
+		    <input type="number" name="weight{{.}}" min="1" max="5000" value="1">
+		  </td>
+		</tr>
+		{{ end }}
+	      </tbody>
+	    </table>
+	  </div>
+	</div>
+	<br>
+	<input type="hidden" name="project_name" value="{{ .Name }}">
+	<input type="hidden" name="group_names" value="{{ .GroupNames }}">
+	<input type="hidden" name="numvar" value="{{ .NumVar }}">
+	<input type="hidden" name="numgroups" value="{{ .NumGroups }}">
+	<input type="hidden" name="store_rawdata" value="{{ .StoreRawData }}">
+	<input type="hidden" name="rates" value="{{ .SamplingRates }}">
+	<input type="submit" value="Next">
+      </form>
+      {{ else }}
+      <p>You have elected to randomize your subjects without the use
+      of any covariates to balance.  The assignments will be made
+      using simple randomization.
+      <form action="/create_project_step8" method="post">
+	<input type="hidden" name="project_name" value="{{ .Name }}">
+	<input type="hidden" name="group_names" value="{{ .GroupNames }}">
+	<input type="hidden" name="numvar" value="{{ .NumVar }}">
+	<input type="hidden" name="numgroups" value="{{ .NumGroups }}">
+	<input type="hidden" name="store_rawdata" value="{{ .StoreRawData }}">
+	<input type="hidden" name="rates" value="{{ .SamplingRates }}">
+	<input type="submit" value="Next">
+      </form>
+      {{ end }}
+      <br>
+      <a href="/dashboard">Cancel and return to dashboard</a><br><br>
+    </div>
+  </body>
+</html>

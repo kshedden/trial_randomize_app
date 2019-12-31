@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .PR.Name }}<br>
+      <b>Treatment groups:</b> {{ .PV.GroupNames }} ({{.NumGroups}} groups)
+      <br>
+      <br>
+      This subject is assigned to group <b>{{.Ax}}</b>.
+      <br>
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Return to project</a><br>
+    </div>
+  </body>
+</html>

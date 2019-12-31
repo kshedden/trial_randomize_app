@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .ProjectName }}<br><br>
+      <form action="/remove_subject_confirm" method="post">
+	{{ if .Any_removed_subjects }}
+	The following subjects have been removed from this study:<br>
+	&nbsp;&nbsp;&nbsp;{{ .RemovedSubjects }}
+	{{ else }}
+	No subjects have been removed from this study.
+	{{ end }}
+	<br><br>
+	Enter the subject id for one subject that you wish to remove from the study:
+	<br><br>
+	  <input type="text" name="subject_id" size=30>
+	  <input type="hidden" name="pkey" value="{{.Pkey}}">
+	  <input type="submit" value="Remove subject">
+      </form>
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Cancel and return to project dashboard</a>
+      <br><br>
+    </div>
+  </body>
+</html>

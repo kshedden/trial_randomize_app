@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <h2>Welcome to the CSCAR treatment assignment system</h2>
+      <p><b>Background:</b> The sequential treatment assignment
+      system is intended to assist researchers who are conducting
+      trials in which subjects are assigned sequentially to treatment
+      groups.  It aims to provide treatment assignments that are
+      balanced across the levels of one or more pre-treatment
+      covariates.  Sequential assignment is useful whenever a complete
+      list of all research subjects is not available at the beginning
+      of a trial.  It is especially effective when a study will enroll
+      a small or moderate number of subjects.
+      <p><b>Methodology:</b> This system implements an approach to
+      treatment assignment using minimization that was described in
+      Pocock and Simon (<em>Biometrics</em> 31, 1975).  The
+      minimization approach reduces covariate imbalances by utilizing
+      non-uniform assignment probabilities for the different treatment
+      groups, in order to reduce the level of imbalance following each
+      round of treatment assignment.  Although the probabilities are
+      not uniform, the treatment assignments are still random, which
+      reduces the risk that a user can bias the results of the trial
+      by selectively enrolling patients.
+      <p><b>Security:</b> This system identifies users through their
+      Google account id.  Users must be signed into their Google
+      account whenever using the system. This system runs on Google
+      AppEngine and the data are stored on Google's servers.  You will
+      be given the option to store either complete data or aggregated
+      data for the subjects in your study.  In the latter case, only
+      the frequency distributions of each covariate within each
+      treatment group are retained by the system.
+	<br>
+	<a href="/dashboard"><h3>Enter the treatment assignment system</h3></a>
+  </body>
+</html>

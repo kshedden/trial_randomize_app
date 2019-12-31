@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <p class="p2"><b>Select a project to delete</b></p>
+      <form action="/delete_project_step2" method="post">
+        <div class="outer">
+          <div class="title">
+            Your projects
+          </div>
+          <div class="table1">
+	    <table class="hor-minimalist-b">
+	      <thead>
+                <tr>
+                  <th scope="col">Select</th>
+		  <th scope="col">Name</th>
+		  <th scope="col">Created</th>
+                </tr>
+	      </thead>
+	      <tbody>
+                {{ range .Proj }}
+                <tr>
+		  <td><input type="radio" value="{{ .Key }}"
+                             name="project_list"/></td>
+                  <td>{{ .Name }}</td>
+		  <td>{{ .CreatedDate }} at {{ .CreatedTime }}</td>
+                </tr>
+                {{ end }}
+	      </tbody>
+	    </table>
+          </div>
+        </div>
+        <br>
+	<input type="submit" value="Delete selected project">
+        <br><br>
+      </form>
+      <a href="/dashboard">Cancel and return to dashboard</a><br><br>
+    </div>
+  </body>
+</html>

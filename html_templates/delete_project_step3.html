@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon"> 
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon"> 
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      {{ if .Success }}
+      Your project was deleted.
+      {{ else }}
+      There was a datastore error, your project was not deleted.
+      {{ end }}
+      <br><br>
+      <a href="/dashboard">Return to dashboard</a>
+    </div>
+  </body>
+</html>

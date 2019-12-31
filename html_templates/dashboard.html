@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      {{ if .AnyProjects }}
+      <br>
+      <div class="outer">
+        <div class="title">
+          Your projects
+        </div>
+        <div class="table1">
+	  <table class="hor-minimalist-b">
+	    <thead>
+              <tr>
+		<th scope="col">Name</th>
+		<th scope="col">Created</th>
+		<th scope="col">Last assignment</th>
+		<th scope="col">Assignments</th>
+              </tr>
+	    </thead>
+	    <tbody>
+              {{ range .Projects }}
+              <tr>
+                <td><a href="project_dashboard?pkey={{.Owner}}::{{.Name}}">{{ .Name }}</a></td>
+				<td>{{ .CreatedDate }} at {{ .CreatedTime }}</td>
+				{{ if eq .ModifiedDate "" }}
+    				<td></td>
+				{{ else }}
+					<td>{{ .ModifiedDate }} at {{ .ModifiedTime }}</td>
+			    {{ end }}
+		        <td>{{ .Project.NumAssignments }}</td>
+              </tr>
+              {{ end }}
+	    </tbody>
+	  </table>
+        </div>
+      </div>
+      <br>
+      {{ else }}
+      <p class="p3">You have no projects.</p>
+      {{ end }}
+      <a href="/create_project_step1">Create a project</a><br>
+      {{ if .AnyProjects }}
+      <a href="/delete_project_step1">Delete a project</a><br><br>
+      {{ end }}
+    </div>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      The sharing settings for your project named "{{ .ProjectName }}"
+      have been updated.
+      <br><br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Return to project dashboard</a>
+    </div>
+  </body>
+</html>

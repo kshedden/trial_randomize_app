@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .ProjectName }}<br>
+      <br>
+      <br>
+      <form action="/edit_assignment_confirm" method="post">
+	<div class="outer">
+	  <div class="table1">
+            <div class="title">
+              Edit a treatment assignment:
+            </div>
+            <table class="hor-minimalist-b">
+	      <col width="20%"/>
+              <col width="80%"/>
+              <tbody>
+		<tr>
+		  <td>
+		    Subject id
+		  </td>
+		  <td>
+		    <input type="text" size=20 value="" name="SubjectId">
+		    </td>
+		</tr>
+		<tr>
+		  <td>
+		    New group
+		  </td>
+		  <td>
+		    <select name="NewGroupName">
+		      {{ range .GroupNames }}
+		      <option value="{{.}}">{{.}}</option>
+		      {{ end }}
+		    </select>
+		  </td>
+		</tr>
+	      </tbody>
+	    </table>
+	  </div>
+	</div>
+	<br>
+	<input type="submit" value="Next">
+	<input type="hidden" name="pkey" value="{{.Pkey}}">
+      </form>
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Cancel and return to project dashboard</a><br>
+    </div>
+  </body>
+</html>

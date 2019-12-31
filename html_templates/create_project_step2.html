@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <p>Will the individual data for each subject be stored?  If you
+      leave the box below unchecked, only aggregated values will be
+      stored for your project.</p>
+      <div id="form1">
+	<form action="/create_project_step3" method="post">
+	  <input type="checkbox" name="store_rawdata" value="yes">
+	  Retain subject-level data for this project
+	  <br><br>
+	  <input type="submit" value="Next">
+	  <input type="hidden" name="project_name" value="{{ .Name }}">
+	</form>
+      <br>
+      <a href="/dashboard">Cancel and return to dashboard</a>
+    </div>
+  </body>
+</html>

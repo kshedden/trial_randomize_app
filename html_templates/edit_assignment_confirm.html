@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <form action="/edit_assignment_completed" method="post">
+	<br>
+	Are you sure that you want to change the treatment assignment
+	of subject <b>{{.SubjectId}}</b> from
+	<b>{{.CurrentGroupName}}</b> to <b>{{.NewGroupName}}</b>?
+	<br><br>
+	<input type="submit" value="Confirm">
+	<input type="hidden" name="pkey" value="{{.Pkey}}">
+	<input type="hidden" name="subject_id" value="{{.SubjectId}}">
+	<input type="hidden" name="new_group_name" value="{{.NewGroupName}}">
+      </form>
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Cancel and return to project dashboard</a><br>
+    </div>
+  </body>
+</html>

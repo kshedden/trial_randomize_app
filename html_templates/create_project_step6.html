@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .Name }}<br>
+      <b>Treatment groups:</b> {{ .GroupNames }} ({{.NumGroups}} groups)<br>
+      <b>Sampling rates:</b> {{ .SamplingRates }}
+      <br><br>
+      <form action="/create_project_step7" method="post">
+	Enter the number of variables that will be used for treatment
+	group assignment:
+	<input type="number" name="numvar" min=0 max=500 value=1>
+	<br><br>
+	<input type="submit" value="Next">
+	<input type="hidden" name="numgroups" value="{{.NumGroups}}">
+	<input type="hidden" name="group_names" value="{{.GroupNames}}">
+	<input type="hidden" name="project_name" value="{{ .Name }}">
+	<input type="hidden" name="store_rawdata" value="{{ .StoreRawData }}">
+	<input type="hidden" name="rates" value="{{ .SamplingRates }}">
+      </form>
+      <br>
+      <a href="/dashboard">Cancel and return to dashboard</a>
+    </div>
+  </body>
+</html>

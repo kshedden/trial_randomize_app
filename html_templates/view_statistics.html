@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/stylesheets/favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <div id="content">
+      {{template "header" .}}
+      <br>
+      <b>Project name:</b> {{ .ProjectView.Name }}<br>
+      <br>
+      <div class="outer">
+	<div class="table1">
+          <div class="title">
+            Treatment assignments
+          </div>
+          <table class="hor-minimalist-b">
+	    <col width="20%"/>
+	    <col width="80%"/>
+	    <thead>
+	      <tr>
+		<th scope="col">Group</th>
+		<th scope="col">Number of subjects</th>
+	      </tr>
+	    </thead>
+            <tbody>
+	      {{ range .TxAsgn }}
+	      <tr>
+		{{ range . }}
+		<td>
+		  {{.}}
+		</td>
+		{{ end }}
+		{{ end }}
+	    </tbody>
+	  </table>
+	</div>
+      </div>
+      <br>
+      {{ if .AnyVars }}
+      <div class="outer">
+	<div class="table1">
+          <div class="title">
+            Treatment assignments within variables
+          </div>
+          <table class="hor-minimalist-b">
+	    <col width="20%"/>
+            <tbody>
+	      <tr>
+		<th scope="col">Variable</th>
+		{{ range .Project.GroupNames }}
+		<th scope="col">{{.}}</th>
+		{{ end }}
+	      </tr>
+	      {{ range .BalStat }}
+	      <tr>
+		{{ range . }}
+		<td>
+		  {{.}}
+		</td>
+		{{ end }}
+		{{ end }}
+	    </tbody>
+	  </table>
+	</div>
+      </div>
+      {{ end }}
+      <br>
+      <a href="/project_dashboard?pkey={{.Pkey}}">Return to project</a><br>
+      <br><br>
+    </div>
+  </body>
+</html>
