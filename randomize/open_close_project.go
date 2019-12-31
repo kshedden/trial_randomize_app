@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// OpenClose_project
+// OpenCloseProject is step 1 of changing the open/close status of a project.
 func OpenCloseProject(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "GET" {
@@ -61,7 +61,7 @@ func OpenCloseProject(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// OpenCloseCompleted
+// OpenCloseCompleted is the second step of changing the open/close status of a project.
 func OpenCloseCompleted(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {

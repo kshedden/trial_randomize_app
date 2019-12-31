@@ -80,30 +80,9 @@ func EditSharingConfirm(w http.ResponseWriter, r *http.Request) {
 		addUsers[k] = strings.ToLower(x)
 	}
 
-	// Gmail addresses don't use @gmail.com.
-	invalidEmails := make([]string, 0)
-	for k, x := range addUsers {
-		uparts := strings.Split(x, "@")
-		if len(uparts) != 2 {
-			invalidEmails = append(invalidEmails, x)
-		} else {
-			if uparts[1] == "gmail.com" {
-				addUsers[k] = uparts[0]
-			}
-		}
-	}
-
-	if len(invalidEmails) > 0 {
-		msg := "The project was not shared because the following email addresses are not valid: "
-		msg += strings.Join(invalidEmails, ", ") + "."
-		rmsg := "Return to project"
-		messagePage(w, r, msg, rmsg, "/project_dashboard?pkey="+pkey)
-		return
-	}
-
-	err := addSharing(ctx, pkey, addUsers)
+	err := addSharing(pkey, addUsers)
 	if err != nil {
-		msg := "Datastore error: unable to update sharing information."
+		msg := "Database error: unable to update sharing information."
 		rmsg := "Return to dashboard"
 		messagePage(w, r, msg, rmsg, "/dashboard")
 		log.Printf("editSharingConfirm [1]: %v", err)

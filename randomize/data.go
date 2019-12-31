@@ -421,11 +421,12 @@ func getSharedUsers(ctx context.Context, projectName string) (map[string]bool, e
 
 // addSharing adds all the given users to be shared for the given
 // project.
-func addSharing(ctx context.Context, projectName string, userNames []string) error {
+func addSharing(projectName string, userNames []string) error {
 
+	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, projectID)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer client.Close()
 
@@ -435,13 +436,14 @@ func addSharing(ctx context.Context, projectName string, userNames []string) err
 
 	sbp := make(map[string]bool)
 	doc, err := client.Doc("SharingByProject/" + projectName).Get(ctx)
-	if err != nil {
+	if status.Code(err) == codes.NotFound {
+		// OK
+	} else if err != nil {
 		log.Printf("addSharing [1]: %v", err)
 		return err
-	}
-	if doc.Exists() {
+	} else {
 		if err := doc.DataTo(&sbp); err != nil {
-			log.Printf("addSharing [1]: %v", err)
+			log.Printf("addSharing [2]: %v", err)
 			return err
 		}
 	}
@@ -452,23 +454,24 @@ func addSharing(ctx context.Context, projectName string, userNames []string) err
 
 	// Store the update sharing by project information
 	if _, err = client.Doc("SharingByProject/"+projectName).Set(ctx, &sbp); err != nil {
-		log.Printf("addSharing: %v", err)
+		log.Printf("addSharing [3]: %v", err)
 		return err
 	}
 
 	// Update SharingByUser
 	for _, uname := range userNames {
 
+		sbu := make(map[string]bool)
 		na := "SharingByUser/" + strings.ToLower(uname)
 		doc, err := client.Doc(na).Get(ctx)
-		if err != nil {
-			log.Printf("addUser: %v", err)
+		if status.Code(err) == codes.NotFound {
+			// OK
+		} else if err != nil {
+			log.Printf("addSharing [4]: %v", err)
 			return err
-		}
-
-		sbu := make(map[string]bool)
-		if doc.Exists() {
+		} else {
 			if err := doc.DataTo(&sbu); err != nil {
+				log.Printf("addSharing [5]: %v", err)
 				return err
 			}
 		}
@@ -476,7 +479,7 @@ func addSharing(ctx context.Context, projectName string, userNames []string) err
 		sbu[projectName] = true
 
 		if _, err := client.Doc(na).Set(ctx, &sbu); err != nil {
-			log.Printf("addUser: %v", err)
+			log.Printf("addSharing [6]: %v", err)
 			return err
 		}
 	}
@@ -493,20 +496,19 @@ func removeSharing(ctx context.Context, projectName string, userNames []string) 
 	}
 
 	// Update SharingByProject.
-	doc, err := client.Doc("SharingByProject/" + projectName).Get(ctx)
-	if err != nil {
-		return err
-	}
-
 	sbp := make(map[string]string)
-	if doc.Exists() {
+	doc, err := client.Doc("SharingByProject/" + projectName).Get(ctx)
+	if status.Code(err) == codes.NotFound {
+		// OK
+	} else if err != nil {
+		return err
+	} else {
 		if err := doc.DataTo(&sbp); err != nil {
 			return err
 		}
-	}
-
-	for _, u := range userNames {
-		delete(sbp, u)
+		for _, u := range userNames {
+			delete(sbp, u)
+		}
 	}
 
 	if _, err = client.Doc("SharingByProject/"+projectName).Set(ctx, sbp); err != nil {
@@ -516,20 +518,19 @@ func removeSharing(ctx context.Context, projectName string, userNames []string) 
 	// Update SharingByUser
 	for _, name := range userNames {
 
+		sbu := make(map[string]bool)
 		na := "SharingByUser/" + strings.ToLower(name)
 		doc, err := client.Doc(na).Get(ctx)
-		if err != nil {
+		if status.Code(err) == codes.NotFound {
+			// OK
+		} else if err != nil {
 			return err
-		}
-
-		sbu := make(map[string]bool)
-		if doc.Exists() {
+		} else {
 			if err := doc.DataTo(&sbu); err != nil {
 				return err
 			}
+			delete(sbu, projectName)
 		}
-
-		delete(sbu, projectName)
 
 		if _, err := client.Doc(na).Set(ctx, &sbu); err != nil {
 			return err
@@ -624,6 +625,7 @@ func Serve404(w http.ResponseWriter) {
 	_, _ = io.WriteString(w, "Not Found")
 }
 
+// ServeError displays an error page.  We should avoid using this when possible.
 func ServeError(ctx context.Context, w http.ResponseWriter, err error) {
 
 	w.WriteHeader(http.StatusInternalServerError)

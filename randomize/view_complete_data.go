@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// ViewCompleteData
+// ViewCompleteData displays the complete data in raw text form.
 func ViewCompleteData(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "GET" {

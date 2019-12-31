@@ -6,7 +6,8 @@ import (
 	"net/http"
 )
 
-// ViewStatistics
+// ViewStatistics displays the current numbers of people assigned to each
+// treatment arm, within each level of each variable.
 func ViewStatistics(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "GET" {
