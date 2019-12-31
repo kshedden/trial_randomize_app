@@ -106,7 +106,7 @@ func checkAccess(ctx context.Context, user *user.User, pkey string, w *http.Resp
 func checkAccessFailed(ctx context.Context, err *error, w *http.ResponseWriter, r *http.Request, user *user.User) {
 
 	if err != nil {
-		msg := "A datastore error occured.  Ask the administrator to check the log for error details."
+		msg := "A datastore error occurred.  Ask the administrator to check the log for error details."
 		log.Errorf(ctx, "check_access_failed: %v", err)
 		rmsg := "Return to dashboard"
 		messagePage(*w, r, user, msg, rmsg, "/dashboard")

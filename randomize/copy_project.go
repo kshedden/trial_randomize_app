@@ -63,7 +63,6 @@ func CopyProjectCompleted(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := r.Context()
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
@@ -98,7 +97,7 @@ func CopyProjectCompleted(w http.ResponseWriter, r *http.Request) {
 	// The owner of the copied project is the current user
 	proj.Owner = useremail
 
-	ctx = context.Background()
+	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, projectID)
 	if err != nil {
 		return

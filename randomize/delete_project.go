@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"cloud.google.com/go/firestore"
+	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -71,7 +72,7 @@ func DeleteProjectStep2(w http.ResponseWriter, r *http.Request) {
 
 	pkey := r.FormValue("project_list")
 	log.Printf("Selected project '%s' for deletion", pkey)
-	svec := strings.Split(pkey, "::")
+	svec := splitKey(pkey)
 
 	if len(svec) != 2 {
 		msg := "Malformed project key"
@@ -99,6 +100,41 @@ func DeleteProjectStep2(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Delete the project from each user's SharingByUser record.
+func cleanSharing(sbp map[string]bool, pkey string) {
+
+	ctx := context.Background()
+	client, err := firestore.NewClient(ctx, projectID)
+	if err != nil {
+		panic(err)
+	}
+	defer client.Close()
+
+	for user := range sbp {
+
+		user = strings.ToLower(user)
+
+		sbu := make(map[string]string)
+		doc, err := client.Doc("SharingByUser/" + user).Get(ctx)
+		if status.Code(err) == codes.NotFound {
+			continue
+		} else if err != nil {
+			log.Printf("Inconsistency in deleteProjectStep3 [6]: %v", err)
+			continue
+		}
+		if err := doc.DataTo(&sbu); err != nil {
+			log.Printf("Inconsistency in deleteProjectStep3 [7]: %v", err)
+			continue
+		}
+
+		delete(sbu, pkey)
+		if _, err = client.Doc("SharingByUser/"+user).Set(ctx, sbu); err != nil {
+			log.Printf("deleteProjectStep3 [8]: %v", err)
+			return
+		}
+	}
+}
+
 // DeleteProjectStep3 deletes a project.
 func DeleteProjectStep3(w http.ResponseWriter, r *http.Request) {
 
@@ -115,6 +151,7 @@ func DeleteProjectStep3(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+	defer client.Close()
 
 	if !checkAccess(pkey, r) {
 		msg := "You do not have access to this project."
@@ -164,30 +201,7 @@ func DeleteProjectStep3(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Delete the project from each user's SharingByUser record.
-	for user := range sbp {
-
-		user = strings.ToLower(user)
-
-		sbu := make(map[string]string)
-		doc, err := client.Doc("SharingByUser/" + user).Get(ctx)
-		if status.Code(err) == codes.NotFound {
-			continue
-		} else if err != nil {
-			log.Printf("Inconsistency in deleteProjectStep3 [6]: %v", err)
-			continue
-		}
-		if err := doc.DataTo(&sbu); err != nil {
-			log.Printf("Inconsistency in deleteProjectStep3 [7]: %v", err)
-			continue
-		}
-
-		delete(sbu, pkey)
-		if _, err = client.Doc("SharingByUser/"+user).Set(ctx, sbu); err != nil {
-			log.Printf("deleteProjectStep3 [8]: %v", err)
-			return
-		}
-	}
+	cleanSharing(sbp, pkey)
 
 	tvals := struct {
 		User     string

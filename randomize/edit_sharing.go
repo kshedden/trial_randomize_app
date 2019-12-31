@@ -17,7 +17,7 @@ func EditSharing(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
-	shr := strings.Split(pkey, "::")
+	shr := splitKey(pkey)
 	owner := shr[0]
 	projectName := shr[1]
 
@@ -71,7 +71,7 @@ func EditSharingConfirm(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
-	spkey := strings.Split(pkey, "::")
+	spkey := splitKey(pkey)
 	projectName := spkey[1]
 
 	ap := r.FormValue("additional_people")

@@ -22,7 +22,7 @@ func ProjectDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	splkey := strings.Split(pkey, "::")
+	splkey := splitKey(pkey)
 	owner := splkey[0]
 
 	proj, _ := getProjectFromKey(pkey)
