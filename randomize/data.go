@@ -719,6 +719,7 @@ func addToAggregate(rec *DataRecord,
 	}
 }
 
+// PrintData prints the cell totals to standard output.
 func (proj *Project) PrintData() {
 
 	ngrp := len(proj.GroupNames)

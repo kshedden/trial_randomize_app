@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// Dashboard displays a list of projects for the current user.
 func Dashboard(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Dashboard")

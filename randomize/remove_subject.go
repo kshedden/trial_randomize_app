@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// RemoveSubject
+// RemoveSubject is the first step for removing a subject from a project.
 func RemoveSubject(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "GET" {
@@ -46,12 +46,12 @@ func RemoveSubject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tvals := struct {
-		User                 string
-		LoggedIn             bool
-		Pkey                 string
-		ProjectName          string
-		Any_removed_subjects bool
-		RemovedSubjects      string
+		User               string
+		LoggedIn           bool
+		Pkey               string
+		ProjectName        string
+		AnyRemovedSubjects bool
+		RemovedSubjects    string
 	}{
 		User:        useremail,
 		LoggedIn:    useremail != "",
@@ -60,7 +60,7 @@ func RemoveSubject(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(proj.RemovedSubjects) > 0 {
-		tvals.Any_removed_subjects = true
+		tvals.AnyRemovedSubjects = true
 		tvals.RemovedSubjects = strings.Join(proj.RemovedSubjects, ", ")
 	}
 
@@ -69,7 +69,7 @@ func RemoveSubject(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// RemoveSubjectConfirm
+// RemoveSubjectConfirm is the second step for removing a subject from a project.
 func RemoveSubjectConfirm(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
@@ -140,7 +140,7 @@ func RemoveSubjectConfirm(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// RemoveSubjectCompleted
+// RemoveSubjectCompleted is the third step for removing a subject from a project.
 func RemoveSubjectCompleted(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {

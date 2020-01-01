@@ -11,7 +11,7 @@
       <br>
       <b>Project name:</b> {{ .ProjectName }}<br><br>
       <form action="/remove_subject_confirm" method="post">
-	{{ if .Any_removed_subjects }}
+	{{ if .AnyRemovedSubjects }}
 	The following subjects have been removed from this study:<br>
 	&nbsp;&nbsp;&nbsp;{{ .RemovedSubjects }}
 	{{ else }}

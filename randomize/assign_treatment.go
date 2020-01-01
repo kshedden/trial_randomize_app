@@ -186,6 +186,7 @@ func AssignTreatmentConfirm(w http.ResponseWriter, r *http.Request) {
 		Values:      strings.Join(Values, ","),
 		SubjectId:   subjectId,
 		AnyVars:     len(project.Variables) > 0,
+	if !ok {
 	}
 
 	if err := tmpl.ExecuteTemplate(w, "assign_treatment_confirm.html", tvals); err != nil {
@@ -236,7 +237,6 @@ func AssignTreatment(w http.ResponseWriter, r *http.Request) {
 	// without going through the previous checks
 	// (e.g. inappropriate use of back button on browser).
 	ok := checkBeforeAssigning(proj, pkey, subjectId, w, r)
-	if !ok {
 		return
 	}
 
