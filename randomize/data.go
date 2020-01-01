@@ -432,6 +432,7 @@ func addSharing(projectName string, userNames []string) error {
 	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, projectID)
 	if err != nil {
+		log.Printf("addSharing [1]: %v", err)
 		return err
 	}
 	defer client.Close()
@@ -445,11 +446,11 @@ func addSharing(projectName string, userNames []string) error {
 	if status.Code(err) == codes.NotFound {
 		// OK
 	} else if err != nil {
-		log.Printf("addSharing [1]: %v", err)
+		log.Printf("addSharing [2]: %v", err)
 		return err
 	} else {
 		if err := doc.DataTo(&sbp); err != nil {
-			log.Printf("addSharing [2]: %v", err)
+			log.Printf("addSharing [3]: %v", err)
 			return err
 		}
 	}
@@ -460,7 +461,7 @@ func addSharing(projectName string, userNames []string) error {
 
 	// Store the update sharing by project information
 	if _, err = client.Doc("SharingByProject/"+projectName).Set(ctx, &sbp); err != nil {
-		log.Printf("addSharing [3]: %v", err)
+		log.Printf("addSharing [4]: %v", err)
 		return err
 	}
 
@@ -473,11 +474,11 @@ func addSharing(projectName string, userNames []string) error {
 		if status.Code(err) == codes.NotFound {
 			// OK
 		} else if err != nil {
-			log.Printf("addSharing [4]: %v", err)
+			log.Printf("addSharing [5]: %v", err)
 			return err
 		} else {
 			if err := doc.DataTo(&sbu); err != nil {
-				log.Printf("addSharing [5]: %v", err)
+				log.Printf("addSharing [6]: %v", err)
 				return err
 			}
 		}
@@ -485,7 +486,7 @@ func addSharing(projectName string, userNames []string) error {
 		sbu[projectName] = true
 
 		if _, err := client.Doc(na).Set(ctx, &sbu); err != nil {
-			log.Printf("addSharing [6]: %v", err)
+			log.Printf("addSharing [7]: %v", err)
 			return err
 		}
 	}
@@ -494,22 +495,27 @@ func addSharing(projectName string, userNames []string) error {
 }
 
 // removeSharing removes the given users from the access list for the given project.
-func removeSharing(ctx context.Context, projectName string, userNames []string) error {
+func removeSharing(projectName string, userNames []string) error {
 
+	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, projectID)
 	if err != nil {
-		panic(err)
+		log.Printf("removeSharing [1]: can't create database client: %v", err)
+		return err
 	}
+	defer client.Close()
 
 	// Update SharingByProject.
-	sbp := make(map[string]string)
+	sbp := make(map[string]bool)
 	doc, err := client.Doc("SharingByProject/" + projectName).Get(ctx)
 	if status.Code(err) == codes.NotFound {
 		// OK
 	} else if err != nil {
+		log.Printf("removeSharing [2]: %v", err)
 		return err
 	} else {
 		if err := doc.DataTo(&sbp); err != nil {
+			log.Printf("removeSharing [3]: %v", err)
 			return err
 		}
 		for _, u := range userNames {
@@ -518,6 +524,7 @@ func removeSharing(ctx context.Context, projectName string, userNames []string) 
 	}
 
 	if _, err = client.Doc("SharingByProject/"+projectName).Set(ctx, sbp); err != nil {
+		log.Printf("removeSharing [4]: %v", err)
 		return err
 	}
 
@@ -530,15 +537,18 @@ func removeSharing(ctx context.Context, projectName string, userNames []string) 
 		if status.Code(err) == codes.NotFound {
 			// OK
 		} else if err != nil {
+			log.Printf("removeSharing [5]: %v", err)
 			return err
 		} else {
 			if err := doc.DataTo(&sbu); err != nil {
+				log.Printf("removeSharing [6]: %v", err)
 				return err
 			}
 			delete(sbu, projectName)
 		}
 
 		if _, err := client.Doc(na).Set(ctx, &sbu); err != nil {
+			log.Printf("removeSharing [7]: %v", err)
 			return err
 		}
 	}

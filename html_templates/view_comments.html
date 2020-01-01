@@ -9,7 +9,7 @@
     <div id="content">
       {{template "header" .}}
       <br>
-      <b>Project name:</b> {{ .PV.Name }}<br>
+      <b>Project name:</b> {{ .ProjView.Name }}<br>
       <br>
       {{ if .AnyComments }}
       <div class="outer">
@@ -19,10 +19,10 @@
           </div>
           <table class="hor-minimalist-b">
             <tbody>
-	      {{ range .PV.Comments }}
+	      {{ range .ProjView.Comments }}
 	      <tr>
 		<td>
-		  <em>Comment made by {{ .Person }} on {{ .Date }} at {{ .Time }}</em>:
+		  <em>Comment made by {{ .Commenter }} on {{ .Date }} at {{ .Time }}</em>:
 		  <br><br>
 		  <div style="overflow:auto">
 		    {{ range .Comment }}

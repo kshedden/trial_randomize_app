@@ -23,9 +23,9 @@ func ViewComments(w http.ResponseWriter, r *http.Request) {
 	}
 
 	proj, _ := getProjectFromKey(pkey)
-	PV := formatProject(proj)
+	projv := formatProject(proj)
 
-	for _, c := range PV.Comments {
+	for _, c := range projv.Comments {
 		c.Date = c.DateTime.Format("2006-1-2")
 		c.Time = c.DateTime.Format("3:04pm")
 	}
@@ -34,14 +34,14 @@ func ViewComments(w http.ResponseWriter, r *http.Request) {
 		User        string
 		LoggedIn    bool
 		Proj        *Project
-		PV          *ProjectView
+		ProjView    *ProjectView
 		Pkey        string
 		AnyComments bool
 	}{
 		User:        useremail,
 		LoggedIn:    useremail != "",
 		Proj:        proj,
-		PV:          PV,
+		ProjView:    projv,
 		AnyComments: len(proj.Comments) > 0,
 		Pkey:        pkey,
 	}

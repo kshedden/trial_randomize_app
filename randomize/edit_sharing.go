@@ -67,7 +67,6 @@ func EditSharingConfirm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := r.Context()
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
@@ -90,9 +89,9 @@ func EditSharingConfirm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	removeUsers := r.Form["remove_users"]
-	err = removeSharing(ctx, pkey, removeUsers)
+	err = removeSharing(pkey, removeUsers)
 	if err != nil {
-		msg := "Datastore error: unable to update sharing information."
+		msg := "Database error: unable to update sharing information."
 		rmsg := "Return to dashboard"
 		messagePage(w, r, msg, rmsg, "/dashboard")
 		log.Printf("editSharingConfirm [2]: %v", err)
