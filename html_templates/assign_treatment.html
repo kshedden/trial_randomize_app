@@ -9,8 +9,8 @@
     <div id="content">
       {{template "header" .}}
       <br>
-      <b>Project name:</b> {{ .PR.Name }}<br>
-      <b>Treatment groups:</b> {{ .PV.GroupNames }} ({{.NumGroups}} groups)
+      <b>Project name:</b> {{ .Project.Name }}<br>
+      <b>Treatment groups:</b> {{ .ProjView.GroupNames }} ({{.NumGroups}} groups)
       <br>
       <br>
       This subject is assigned to group <b>{{.Ax}}</b>.

@@ -148,6 +148,6 @@ func TestAssignments3(t *testing.T) {
 	bias := 5
 
 	for j := 0; j < 10; j++ {
-		r := checkAssignment3(bias)
+		_ := checkAssignment3(bias)
 	}
 }

@@ -10,7 +10,7 @@ import (
 	"cloud.google.com/go/firestore"
 )
 
-// AssignTreatmentInput
+// AssignTreatmentInput is step 1 of assigning a treatment group to a subject.
 func AssignTreatmentInput(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "GET" {
@@ -110,7 +110,7 @@ func checkBeforeAssigning(proj *Project, pkey string, subjectId string, w http.R
 	return true
 }
 
-// AssignTreatmentConfirm
+// AssignTreatmentConfirm is step 2 of assigning a treatment group to a subject.
 func AssignTreatmentConfirm(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
@@ -193,7 +193,7 @@ func AssignTreatmentConfirm(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// AssignTreatment
+// AssignTreatment is step 3 of assigning a treatment group to a subject.
 func AssignTreatment(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
@@ -271,8 +271,8 @@ func AssignTreatment(w http.ResponseWriter, r *http.Request) {
 	tvals := struct {
 		User      string
 		LoggedIn  bool
-		PR        *Project
-		PV        *ProjectView
+		Project   *Project
+		ProjView  *ProjectView
 		NumGroups int
 		Ax        string
 		Pkey      string
@@ -280,8 +280,8 @@ func AssignTreatment(w http.ResponseWriter, r *http.Request) {
 		User:      useremail,
 		LoggedIn:  useremail != "",
 		Ax:        ax,
-		PR:        proj,
-		PV:        pview,
+		Project:   proj,
+		ProjView:  pview,
 		NumGroups: len(proj.GroupNames),
 		Pkey:      pkey,
 	}
