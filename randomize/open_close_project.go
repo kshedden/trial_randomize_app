@@ -17,7 +17,7 @@ func OpenCloseProject(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
-	if ok := checkAccess(pkey, r); !ok {
+	if !checkAccess(pkey, r) {
 		msg := "You do not have access to this page."
 		rmsg := "Return"
 		messagePage(w, r, msg, rmsg, "/")
@@ -73,7 +73,7 @@ func OpenCloseCompleted(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
-	if ok := checkAccess(pkey, r); !ok {
+	if !checkAccess(pkey, r) {
 		msg := "You do not have access to this page."
 		rmsg := "Return"
 		messagePage(w, r, msg, rmsg, "/")

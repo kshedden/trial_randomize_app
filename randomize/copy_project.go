@@ -22,8 +22,7 @@ func CopyProject(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
-	ok := checkAccess(pkey, r)
-	if !ok {
+	if !checkAccess(pkey, r) {
 		msg := "Only the project owner can copy a project."
 		rmsg := "Return to project dashboard"
 		messagePage(w, r, msg, rmsg, "/project_dashboard?pkey="+pkey)
@@ -66,8 +65,7 @@ func CopyProjectCompleted(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
-	ok := checkAccess(pkey, r)
-	if !ok {
+	if !checkAccess(pkey, r) {
 		msg := "You do not have access to the requested project."
 		rmsg := "Return to project dashboard"
 		messagePage(w, r, msg, rmsg, "/project_dashboard?pkey="+pkey)

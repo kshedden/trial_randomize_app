@@ -220,8 +220,14 @@ type ProjectView struct {
 // Variable contains information about one variable that will be used
 // as part of the treatment assignment.
 type Variable struct {
-	Name   string
+
+	// Name identifies the variable
+	Name string
+
+	// Levels are the distinct values that the variable can have
 	Levels []string
+
+	// Weight is a numeric weight for this variable
 	Weight float64
 }
 
@@ -710,5 +716,21 @@ func addToAggregate(rec *DataRecord,
 				proj.SetData(j, k, grpIx, x+1)
 			}
 		}
+	}
+}
+
+func (proj *Project) PrintData() {
+
+	ngrp := len(proj.GroupNames)
+
+	for k, va := range proj.Variables {
+		fmt.Printf("%s\n", va.Name)
+		for j := range va.Levels {
+			for g := 0; g < ngrp; g++ {
+				fmt.Printf("%4.0f", proj.GetData(k, j, g))
+			}
+			fmt.Printf("\n")
+		}
+		fmt.Printf("\n")
 	}
 }

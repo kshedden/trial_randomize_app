@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// EditAssignment
+// EditAssignment is step 1 of the process of editing (changing) a treatment assignment.
 func EditAssignment(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "GET" {
@@ -18,7 +18,7 @@ func EditAssignment(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
-	if ok := checkAccess(pkey, r); !ok {
+	if !checkAccess(pkey, r) {
 		msg := "Only the project owner can edit treatment group assignments that have already been made."
 		rmsg := "Return to project dashboard"
 		messagePage(w, r, msg, rmsg, "/project_dashboard?pkey="+pkey)
@@ -74,7 +74,7 @@ func EditAssignment(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// EditAssignmentConfirm
+// EditAssignmentConfirm is step 2 of the process of editing (changing) a treatment assignment.
 func EditAssignmentConfirm(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
@@ -85,7 +85,7 @@ func EditAssignmentConfirm(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
-	if ok := checkAccess(pkey, r); !ok {
+	if !checkAccess(pkey, r) {
 		msg := "You do not have access to this page."
 		rmsg := "Return"
 		messagePage(w, r, msg, rmsg, "/")
@@ -160,7 +160,7 @@ func EditAssignmentConfirm(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// EditAssignmentCompleted
+// EditAssignmentCompleted is step 3 of the process of editing (changing) a treatment assignment.
 func EditAssignmentCompleted(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
@@ -172,7 +172,7 @@ func EditAssignmentCompleted(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
-	if ok := checkAccess(pkey, r); !ok {
+	if !checkAccess(pkey, r) {
 		msg := "You do not have access to this page."
 		rmsg := "Return"
 		messagePage(w, r, msg, rmsg, "/")
@@ -213,12 +213,13 @@ func EditAssignmentCompleted(w http.ResponseWriter, r *http.Request) {
 			rec.CurrentGroup = newGroupName
 			addToAggregate(rec, proj)
 
-			comment := new(Comment)
-			comment.Commenter = useremail
-			comment.DateTime = time.Now()
-			comment.Comment = []string{
-				fmt.Sprintf("Group assignment for subject '%s' changed from '%s' to '%s'",
-					subjectId, oldGroupName, newGroupName)}
+			comment := &Comment{
+				Commenter: useremail,
+				DateTime:  time.Now(),
+				Comment: []string{
+					fmt.Sprintf("Group assignment for subject '%s' changed from '%s' to '%s'",
+						subjectId, oldGroupName, newGroupName)},
+			}
 			proj.Comments = append(proj.Comments, comment)
 
 			found = true
@@ -233,7 +234,7 @@ func EditAssignmentCompleted(w http.ResponseWriter, r *http.Request) {
 
 	err = storeProject(ctx, proj, pkey)
 	if err != nil {
-		msg := "Error, your project was not saved."
+		msg := "Database error, your project was not saved."
 		rmsg := "Return to project"
 		messagePage(w, r, msg, rmsg, "/project_dashboard?pkey="+pkey)
 		return

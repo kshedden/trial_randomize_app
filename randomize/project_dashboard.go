@@ -18,7 +18,7 @@ func ProjectDashboard(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
 
-	if ok := checkAccess(pkey, r); !ok {
+	if !checkAccess(pkey, r) {
 		return
 	}
 

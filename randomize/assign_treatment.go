@@ -28,7 +28,7 @@ func AssignTreatmentInput(w http.ResponseWriter, r *http.Request) {
 
 	pkey := r.FormValue("pkey")
 
-	if ok := checkAccess(pkey, r); !ok {
+	if !checkAccess(pkey, r) {
 		return
 	}
 
@@ -123,7 +123,7 @@ func AssignTreatmentConfirm(w http.ResponseWriter, r *http.Request) {
 
 	pkey := r.FormValue("pkey")
 
-	if ok := checkAccess(pkey, r); !ok {
+	if !checkAccess(pkey, r) {
 		return
 	}
 
@@ -210,7 +210,7 @@ func AssignTreatment(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	if ok := checkAccess(pkey, r); !ok {
+	if !checkAccess(pkey, r) {
 		return
 	}
 

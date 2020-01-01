@@ -7,6 +7,40 @@ import (
 	"time"
 )
 
+func cumsum(x []float64) []float64 {
+	y := make([]float64, len(x))
+	copy(y, x)
+	for j := 1; j < len(x); j++ {
+		y[j] += y[j-1]
+	}
+	return y
+}
+
+func sample(rgen *rand.Rand, cumprob []float64) int {
+	ur := rgen.Float64()
+	jr := 0
+	for ii, x := range cumprob {
+		if x > ur {
+			jr = ii
+			break
+		}
+	}
+
+	return jr
+}
+
+func genPocockSimon(n, bias int) []float64 {
+	qmin := 1 / float64(n)
+	qmax := 2 / float64(n-1)
+	qq := qmin + float64(bias-1)*(qmax-qmin)/9.0
+	prob := make([]float64, n)
+	nf := float64(n)
+	for j := range prob {
+		prob[j] = qq - 2*(nf*qq-1)*float64(j+1)/(nf*(nf+1))
+	}
+	return prob
+}
+
 // doAssignment
 func (proj *Project) doAssignment(mpv map[string]string, subjectId string, userId string) (string, error) {
 
@@ -40,34 +74,16 @@ func (proj *Project) doAssignment(mpv map[string]string, subjectId string, userI
 	sort.Float64s(sortedScores)
 
 	// Construct the Pocock/Simon probabilities.
-	N := len(proj.GroupNames)
-	qmin := 1 / float64(N)
-	qmax := 2 / float64(N-1)
-	qq := qmin + float64(proj.Bias-1)*(qmax-qmin)/9.0
-	prob := make([]float64, N)
-	for j := range prob {
-		prob[j] = qq - 2*(float64(N)*qq-1)*float64(j+1)/float64(N*(N+1))
-	}
+	prob := genPocockSimon(len(proj.GroupNames), proj.Bias)
 
 	// The cumulative Pocock Simon probabilities.
-	cumprob := make([]float64, N)
-	copy(cumprob, prob)
-	for j := 1; j < len(cumprob); j++ {
-		cumprob[j] += cumprob[j-1]
-	}
+	cumprob := cumsum(prob)
 
 	// A random value distributed according to the Pocock Simon
 	// probabilities.
-	ur := rgen.Float64()
-	jr := 0
-	for ii, x := range cumprob {
-		if x > ur {
-			jr = ii
-			break
-		}
-	}
+	jr := sample(rgen, cumprob)
 
-	// Get all values tied with the selected value.
+	// Get all groups whose score is tied with the score of the selected value.
 	var ties []int
 	for i, x := range potentialScores {
 		if x == sortedScores[jr] {
@@ -78,22 +94,26 @@ func (proj *Project) doAssignment(mpv map[string]string, subjectId string, userI
 	// Assign to this group.
 	ii := ties[rgen.Intn(len(ties))]
 
-	// Update the project.
+	// Update the cell totals.
 	proj.Assignments[ii]++
 	for j := 0; j < numvar; j++ {
 
-		VA := proj.Variables[j]
-		x := mpv[VA.Name]
+		va := proj.Variables[j]
+		x, ok := mpv[va.Name]
+		if !ok {
+			msg := fmt.Sprintf("Variable '%s' not found", va.Name)
+			return "", fmt.Errorf(msg)
+		}
 
 		kk := -1
-		for k, v := range VA.Levels {
+		for k, v := range va.Levels {
 			if x == v {
 				kk = k
 				break
 			}
 		}
 		if kk == -1 {
-			return "", fmt.Errorf("Invalid state in Do_assignment")
+			return "", fmt.Errorf("Invalid state in DoAssignment")
 		}
 
 		z := proj.GetData(j, kk, ii)
@@ -124,10 +144,8 @@ func (proj *Project) doAssignment(mpv map[string]string, subjectId string, userI
 	return proj.GroupNames[ii], nil
 }
 
-// Score calculates the contribution to the overall score for a given variable
-// `va` if we put a subject with data value `x` into group `grp`.
-// `counts` contains the current cell counts for each level x group
-// combination for this variable, `va` contains variable information.
+// Score calculates the contribution to the overall score if we assign
+// a subject with level `x` for the kth variable into group `grp`.
 func (proj *Project) Score(x string, grp, k int) float64 {
 
 	numGroups := len(proj.GroupNames)
@@ -144,15 +162,21 @@ func (proj *Project) Score(x string, grp, k int) float64 {
 		// this unit to group `grp`.
 		var mn, mx float64
 		for i := 0; i < numGroups; i++ {
+
+			// The current count for variable k, level j, group i.
 			nc := proj.GetData(k, j, i)
+
+			// Add 1 if we are assigning the current subject to this
+			// group.
 			if i == grp {
 				nc++
 			}
+
 			nc /= proj.SamplingRates[i]
-			if nc < mn {
+			if i == 0 || nc < mn {
 				mn = nc
 			}
-			if nc > mx {
+			if i == 0 || nc > mx {
 				mx = nc
 			}
 		}
