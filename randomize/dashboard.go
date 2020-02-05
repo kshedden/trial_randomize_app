@@ -8,8 +8,6 @@ import (
 // Dashboard displays a list of projects for the current user.
 func Dashboard(w http.ResponseWriter, r *http.Request) {
 
-	log.Printf("Dashboard")
-
 	if r.Method != "GET" {
 		log.Printf("Dashboard method != GET")
 		Serve404(w)
@@ -17,18 +15,18 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	useremail := userEmail(r)
-	log.Printf("Dashboard email=%s", useremail)
+	user := userEmail(r)
+	log.Printf("Dashboard email=%s", user)
 
-	projlist, err := getProjects(ctx, useremail, true)
+	projlist, err := getProjects(ctx, user, true)
 	if err != nil {
-		msg := "A database error occurred, projects cannot be retrieved."
 		log.Printf("Dashboard: %v", err)
+		msg := "A database error occurred, projects cannot be retrieved."
 		rmsg := "Return to dashboard"
 		messagePage(w, r, msg, rmsg, "/dashboard")
 		return
 	}
-	log.Printf("Got %d projects", len(projlist))
+	log.Printf("Got %d projects for %s", len(projlist), user)
 
 	tvals := struct {
 		User        string
@@ -36,8 +34,8 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 		AnyProjects bool
 		Projects    []*ProjectView
 	}{
-		User:        useremail,
-		LoggedIn:    useremail != "",
+		User:        user,
+		LoggedIn:    user != "",
 		AnyProjects: len(projlist) > 0,
 		Projects:    formatProjects(projlist),
 	}

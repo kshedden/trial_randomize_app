@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"golang.org/x/net/context"
 )
 
 // ViewStatistics displays the current numbers of people assigned to each
@@ -17,8 +19,10 @@ func ViewStatistics(w http.ResponseWriter, r *http.Request) {
 
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := context.Background()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		return
 	}
 

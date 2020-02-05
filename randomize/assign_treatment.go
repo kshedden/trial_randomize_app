@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
+	"golang.org/x/net/context"
 )
 
 // AssignTreatmentInput is step 1 of assigning a treatment group to a subject.
@@ -22,13 +23,18 @@ func AssignTreatmentInput(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 
 	if err := r.ParseForm(); err != nil {
+		log.Printf("AssignTreatmentInput")
 		ServeError(ctx, w, err)
 		return
 	}
 
 	pkey := r.FormValue("pkey")
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
+		msg := "You don't have access to this project."
+		rmsg := "Return to dashboard"
+		messagePage(w, r, msg, rmsg, "/dashboard")
 		return
 	}
 
@@ -122,8 +128,12 @@ func AssignTreatmentConfirm(w http.ResponseWriter, r *http.Request) {
 	useremail := userEmail(r)
 
 	pkey := r.FormValue("pkey")
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
+		msg := "You don't have access to this project."
+		rmsg := "Return to dashboard"
+		messagePage(w, r, msg, rmsg, "/dashboard")
 		return
 	}
 
@@ -201,16 +211,20 @@ func AssignTreatment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := r.Context()
+	ctx := context.Background()
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	susers, _ := getSharedUsers(ctx, pkey)
 
 	client, err := firestore.NewClient(ctx, projectID)
 	if err != nil {
 		panic(err)
 	}
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
+		msg := "You don't have access to this project."
+		rmsg := "Return to dashboard"
+		messagePage(w, r, msg, rmsg, "/dashboard")
 		return
 	}
 

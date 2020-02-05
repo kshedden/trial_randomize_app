@@ -17,8 +17,10 @@ func ProjectDashboard(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
+		log.Printf("Access check failed")
 		return
 	}
 
@@ -27,8 +29,6 @@ func ProjectDashboard(w http.ResponseWriter, r *http.Request) {
 
 	proj, _ := getProjectFromKey(pkey)
 	projView := formatProject(proj)
-
-	susers, _ := getSharedUsers(ctx, pkey)
 
 	var sul []string
 	for k := range susers {

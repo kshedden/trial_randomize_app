@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"cloud.google.com/go/firestore"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -21,8 +20,10 @@ func CopyProject(w http.ResponseWriter, r *http.Request) {
 
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := r.Context()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		msg := "Only the project owner can copy a project."
 		rmsg := "Return to project dashboard"
 		messagePage(w, r, msg, rmsg, "/project_dashboard?pkey="+pkey)
@@ -64,8 +65,10 @@ func CopyProjectCompleted(w http.ResponseWriter, r *http.Request) {
 
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := r.Context()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		msg := "You do not have access to the requested project."
 		rmsg := "Return to project dashboard"
 		messagePage(w, r, msg, rmsg, "/project_dashboard?pkey="+pkey)
@@ -95,7 +98,6 @@ func CopyProjectCompleted(w http.ResponseWriter, r *http.Request) {
 	// The owner of the copied project is the current user
 	proj.Owner = useremail
 
-	ctx := context.Background()
 	client, err := firestore.NewClient(ctx, projectID)
 	if err != nil {
 		return

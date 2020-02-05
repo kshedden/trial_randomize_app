@@ -15,14 +15,15 @@ import (
 func DeleteProjectStep1(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "GET" {
+		log.Printf("Access method != GET")
 		Serve404(w)
 		return
 	}
 
 	ctx := r.Context()
-	useremail := userEmail(r)
+	user := userEmail(r)
 
-	projlist, err := getProjects(ctx, useremail, false)
+	projlist, err := getProjects(ctx, user, false)
 	if err != nil {
 		msg := "A database error occurred, your projects cannot be retrieved."
 		log.Printf("Delete_project_step1: %v", err)
@@ -44,9 +45,9 @@ func DeleteProjectStep1(w http.ResponseWriter, r *http.Request) {
 		LoggedIn bool
 		Proj     []*ProjectView
 	}{
-		User:     useremail,
+		User:     user,
 		Proj:     formatProjects(projlist),
-		LoggedIn: useremail != "",
+		LoggedIn: user != "",
 	}
 
 	if err := tmpl.ExecuteTemplate(w, "delete_project_step1.html", tvals); err != nil {
@@ -58,12 +59,13 @@ func DeleteProjectStep1(w http.ResponseWriter, r *http.Request) {
 func DeleteProjectStep2(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
+		log.Printf("Method != POST")
 		Serve404(w)
 		return
 	}
 
 	ctx := r.Context()
-	useremail := userEmail(r)
+	user := userEmail(r)
 
 	if err := r.ParseForm(); err != nil {
 		ServeError(ctx, w, err)
@@ -73,6 +75,12 @@ func DeleteProjectStep2(w http.ResponseWriter, r *http.Request) {
 	pkey := r.FormValue("project_list")
 	log.Printf("Selected project '%s' for deletion", pkey)
 	svec := splitKey(pkey)
+
+	if pkey == "" {
+		msg := "You did not select a project to delete."
+		rmsg := "Return to dashboard"
+		messagePage(w, r, msg, rmsg, "/dashboard")
+	}
 
 	if len(svec) != 2 {
 		msg := "Malformed project key"
@@ -88,8 +96,8 @@ func DeleteProjectStep2(w http.ResponseWriter, r *http.Request) {
 		Pkey        string
 		Nokey       bool
 	}{
-		User:        useremail,
-		LoggedIn:    useremail != "",
+		User:        user,
+		LoggedIn:    user != "",
 		ProjectName: svec[1],
 		Pkey:        pkey,
 		Nokey:       len(pkey) == 0,
@@ -114,7 +122,7 @@ func cleanSharing(sbp map[string]bool, pkey string) {
 
 		user = strings.ToLower(user)
 
-		sbu := make(map[string]string)
+		sbu := make(map[string]bool)
 		doc, err := client.Doc("SharingByUser/" + user).Get(ctx)
 		if status.Code(err) == codes.NotFound {
 			continue
@@ -139,13 +147,15 @@ func cleanSharing(sbp map[string]bool, pkey string) {
 func DeleteProjectStep3(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "POST" {
+		log.Printf("Method != POST")
 		Serve404(w)
 		return
 	}
 
 	ctx := r.Context()
-	useremail := userEmail(r)
+	user := userEmail(r)
 	pkey := r.FormValue("Pkey")
+	susers, _ := getSharedUsers(ctx, pkey)
 
 	client, err := firestore.NewClient(ctx, projectID)
 	if err != nil {
@@ -153,7 +163,7 @@ func DeleteProjectStep3(w http.ResponseWriter, r *http.Request) {
 	}
 	defer client.Close()
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		msg := "You do not have access to this project."
 		rmsg := "Return"
 		messagePage(w, r, msg, rmsg, "/")
@@ -208,9 +218,9 @@ func DeleteProjectStep3(w http.ResponseWriter, r *http.Request) {
 		LoggedIn bool
 		Success  bool
 	}{
-		User:     useremail,
+		User:     user,
 		LoggedIn: err == nil,
-		Success:  useremail != "",
+		Success:  user != "",
 	}
 
 	if err := tmpl.ExecuteTemplate(w, "delete_project_step3.html", tvals); err != nil {

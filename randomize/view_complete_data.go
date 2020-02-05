@@ -17,8 +17,10 @@ func ViewCompleteData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pkey := r.FormValue("pkey")
+	ctx := r.Context()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		return
 	}
 

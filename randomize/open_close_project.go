@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"golang.org/x/net/context"
 )
 
 // OpenCloseProject is step 1 of changing the open/close status of a project.
@@ -16,8 +18,10 @@ func OpenCloseProject(w http.ResponseWriter, r *http.Request) {
 
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := r.Context()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		msg := "You do not have access to this page."
 		rmsg := "Return"
 		messagePage(w, r, msg, rmsg, "/")
@@ -69,11 +73,12 @@ func OpenCloseCompleted(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := r.Context()
+	ctx := context.Background()
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		msg := "You do not have access to this page."
 		rmsg := "Return"
 		messagePage(w, r, msg, rmsg, "/")

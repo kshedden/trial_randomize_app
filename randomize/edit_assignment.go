@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"golang.org/x/net/context"
 )
 
 // EditAssignment is step 1 of the process of editing (changing) a treatment assignment.
@@ -17,8 +19,10 @@ func EditAssignment(w http.ResponseWriter, r *http.Request) {
 
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := context.Background()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		msg := "Only the project owner can edit treatment group assignments that have already been made."
 		rmsg := "Return to project dashboard"
 		messagePage(w, r, msg, rmsg, "/project_dashboard?pkey="+pkey)
@@ -84,8 +88,10 @@ func EditAssignmentConfirm(w http.ResponseWriter, r *http.Request) {
 
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := context.Background()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		msg := "You do not have access to this page."
 		rmsg := "Return"
 		messagePage(w, r, msg, rmsg, "/")
@@ -168,11 +174,12 @@ func EditAssignmentCompleted(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := r.Context()
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := context.Background()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		msg := "You do not have access to this page."
 		rmsg := "Return"
 		messagePage(w, r, msg, rmsg, "/")

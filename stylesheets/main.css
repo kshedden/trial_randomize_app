@@ -1,6 +1,10 @@
 html,body {
     height: 100vh;
     min-height: 100vh;
+    width: 960px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 body {
@@ -8,8 +12,8 @@ body {
     color: #231F20;
     background-color: #fff;
     font-size: 11px;
-    padding: 0px;
-    margin: 0;
+    margin-left: 10px;
+    margin-right: 10px;
     text-align: center;
     clear: both;
 }
@@ -34,30 +38,13 @@ div.mcol {
     text-align: left;
     margin-left: auto;
     margin-right: auto;
-    padding: 10px;
-}
-
-#login {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #fff;
-    padding: 10px;
-    border: 1px solid #647087;
-    border-right: 0px;
-    border-left: 0px;
-    border-top: 3px;
-    padding-bottom: 2px;
-    text-align: left;
-    font-family: Verdana, Helvetica, sans-serif;
-    font-size: 12px;
 }
 
 #banner {
     width: 100%;
     background-color: #00274c;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0px;
+    margin-right: 0px;
     padding: 10px;
 }
 
@@ -69,13 +56,9 @@ div.tinput  {
 }
 
 
-p.p1 { width:700px;font-size:200% }
-
 p.p2 { width:700px;font-size:120% }
 
-p.p3 { width:700px;font-size:100% }
-
-p.p3 { vertical-align:middle }
+p.p3 { width:700px;font-size:100%;vertical-align:middle }
 
 textarea.t1 { vertical-align:middle }
 
@@ -95,24 +78,11 @@ textarea.t1 { vertical-align:middle }
 div.outer {
     border: 1px solid #647087;
     background-color: #fff;
-    padding: 5px;
-    padding-bottom: 0px;
     width: 100%;
     margin-top: 0px;
     margin-bottom: 0px;
-    margin-left: auto;
-    margin-right: auto;
-    clear: both;
-}
-
-div.question-outer {
-    border: 0px solid #647087;
-    background-color: #fff;
-    padding: 5px;
-    padding-bottom: 0px;
-    width: 700px;
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
     clear: both;
 }
 
@@ -127,18 +97,6 @@ div.title {
     clear: both;
 }
 
-div.question {
-    background-color: #fff;
-    color: #000;
-    font-weight: normal;
-    padding: 5px;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
-    margin-top: 0em;
-    border-bottom: 0px;
-    clear: both;
-}
-
 textarea.taw {
     width:700px;
     padding-top:0px;
@@ -149,7 +107,7 @@ textarea.taw {
 div.table1 {
     background-color: #fff;
     padding: 0px;
-    margin-top: 0em;
+    margin-top: 0px;
     margin-bottom: 0px;
     padding-bottom: 0px;
     clear: both;
@@ -157,43 +115,46 @@ div.table1 {
 
 table.hor-minimalist-b
 {
-        font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-        font-size: 12px;
-        background: #fff;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 12px;
+    background: #fff;
 	width: 100%;
-        border-collapse: collapse;
-        text-align: left;
+    border-collapse: collapse;
+    text-align: left;
 }
 
 table.hor-minimalist-b th
 {
-        font-size: 14px;
-        font-weight: strong;
-        color: #000;
-        padding: 8px 6px;
-        border-bottom: 2px solid #000000;
+    font-size: 14px;
+    font-weight: strong;
+    color: #000;
+    padding: 8px 6px;
+    border-bottom: 2px solid #000000;
 }
+
 table.hor-minimalist-b tr
 {
-        border-top: 0;
-        color: #000;
-        padding: 6px 8px;
+    border-top: 0;
+    color: #000;
+    padding: 6px 8px;
 }
+
 table.hor-minimalist-b tr:first-child td
 {
-        border-top: 0;
-        color: #000;
-        padding: 6px 8px;
+    border-top: 0;
+    color: #000;
+    padding: 6px 8px;
 }
+
 table.hor-minimalist-b td
 {
-        border-bottom: thin solid #647087;
-        padding: 6px 8px;
+    border-bottom: thin solid #647087;
+    padding: 6px 8px;
 }
 
 table.hor-minimalist-b tr:last-child td
 {
-        border-bottom: 0;
-        color: #000;
-        padding: 6px 8px;
+    border-bottom: 0;
+    color: #000;
+    padding: 6px 8px;
 }

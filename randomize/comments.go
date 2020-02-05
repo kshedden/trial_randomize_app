@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"golang.org/x/net/context"
 )
 
 // ViewComments
@@ -15,10 +17,15 @@ func ViewComments(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	useremail := userEmail(r)
+	user := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := context.Background()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
+		msg := "You don't have permission to access this project."
+		rmsg := "Return to dashboard"
+		messagePage(w, r, msg, rmsg, "/dashboard")
 		return
 	}
 
@@ -38,8 +45,8 @@ func ViewComments(w http.ResponseWriter, r *http.Request) {
 		Pkey        string
 		AnyComments bool
 	}{
-		User:        useremail,
-		LoggedIn:    useremail != "",
+		User:        user,
+		LoggedIn:    user != "",
 		Proj:        proj,
 		ProjView:    projv,
 		AnyComments: len(proj.Comments) > 0,
@@ -59,10 +66,15 @@ func AddComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	useremail := userEmail(r)
+	user := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := context.Background()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
+		msg := "You don't have permission to access this project."
+		rmsg := "Return to dashboard"
+		messagePage(w, r, msg, rmsg, "/dashboard")
 		return
 	}
 
@@ -76,8 +88,8 @@ func AddComment(w http.ResponseWriter, r *http.Request) {
 		PV       *ProjectView
 		Pkey     string
 	}{
-		User:     useremail,
-		LoggedIn: useremail != "",
+		User:     user,
+		LoggedIn: user != "",
 		PR:       proj,
 		PV:       fproj,
 		Pkey:     pkey,
@@ -97,10 +109,14 @@ func ConfirmAddComment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	useremail := userEmail(r)
+	user := userEmail(r)
 	pkey := r.FormValue("pkey")
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
+		msg := "You don't have permission to access this project."
+		rmsg := "Return to dashboard"
+		messagePage(w, r, msg, rmsg, "/dashboard")
 		return
 	}
 
@@ -127,7 +143,7 @@ func ConfirmAddComment(w http.ResponseWriter, r *http.Request) {
 	loc, _ := time.LoadLocation("America/New_York")
 	t := time.Now().In(loc)
 	comment := &Comment{
-		Commenter: useremail,
+		Commenter: user,
 		DateTime:  time.Now(),
 		Date:      t.Format("2006-1-2"),
 		Time:      t.Format("3:04pm"),

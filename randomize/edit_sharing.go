@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 	"strings"
+
+	"golang.org/x/net/context"
 )
 
 // EditSharing is page 1 for changing the sharing settings
@@ -14,14 +16,14 @@ func EditSharing(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := r.Context()
-	useremail := userEmail(r)
+	ctx := context.Background()
+	user := userEmail(r)
 	pkey := r.FormValue("pkey")
 	shr := splitKey(pkey)
 	owner := shr[0]
 	projectName := shr[1]
 
-	if strings.ToLower(owner) != strings.ToLower(useremail) {
+	if strings.ToLower(owner) != strings.ToLower(user) {
 		msg := "Only the owner of a project can manage sharing."
 		rmsg := "Return to dashboard"
 		messagePage(w, r, msg, rmsg, "/dashboard")
@@ -46,8 +48,8 @@ func EditSharing(w http.ResponseWriter, r *http.Request) {
 		ProjectName    string
 		Pkey           string
 	}{
-		User:           useremail,
-		LoggedIn:       useremail != "",
+		User:           user,
+		LoggedIn:       user != "",
 		SharedUsers:    sul,
 		AnySharedUsers: len(sul) > 0,
 		ProjectName:    projectName,
@@ -67,7 +69,7 @@ func EditSharingConfirm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	useremail := userEmail(r)
+	user := userEmail(r)
 	pkey := r.FormValue("pkey")
 
 	spkey := splitKey(pkey)
@@ -104,8 +106,8 @@ func EditSharingConfirm(w http.ResponseWriter, r *http.Request) {
 		ProjectName string
 		Pkey        string
 	}{
-		User:        useremail,
-		LoggedIn:    useremail != "",
+		User:        user,
+		LoggedIn:    user != "",
 		ProjectName: projectName,
 		Pkey:        pkey,
 	}

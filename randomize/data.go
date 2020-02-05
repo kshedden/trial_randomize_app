@@ -49,10 +49,10 @@ func userEmail(r *http.Request) string {
 
 // checkAccess returns true if and only if the currently
 // logged in user has access to the project with the given key.
-func checkAccess(key string, r *http.Request) bool {
+func checkAccess(key string, shared map[string]bool, r *http.Request) bool {
 	email := userEmail(r)
 	toks := splitKey(key)
-	return toks[0] == email
+	return toks[0] == email || shared[email]
 }
 
 // DataRecord stores one record of raw data.
@@ -579,7 +579,7 @@ func getProjects(ctx context.Context, user string, includeShared bool) ([]*Proje
 		log.Printf("GetProjects[2]: %v", err)
 		return nil, err
 	}
-	log.Printf("Got %d projects", len(adocs))
+	log.Printf("Got %d owned projects for %s", len(adocs), user)
 
 	for _, doc := range adocs {
 		var proj Project
@@ -595,41 +595,42 @@ func getProjects(ctx context.Context, user string, includeShared bool) ([]*Proje
 	}
 
 	// Get project ids that are shared with this user
-	var sbu map[string]string
+	var sbu map[string]bool
 	doc, err := client.Doc("SharingByUser/" + user).Get(ctx)
 	if status.Code(err) == codes.NotFound {
 		// No projects shared with this user
 		return projlist, nil
 	} else if err != nil {
-		log.Printf("GetProjects[2]: %v", err)
+		log.Printf("GetProjects[4]: %v", err)
 		return nil, err
 	}
 
 	if err := doc.DataTo(&sbu); err != nil {
-		log.Printf("GetProjects[3]: %v", err)
+		log.Printf("GetProjects[5]: %v", err)
 		return nil, err
 	}
 
 	// Get the shared projects
-	for _, spv := range sbu {
+	for spv := range sbu {
 
 		doc, err := client.Doc("Project/" + spv).Get(ctx)
 		if status.Code(err) == codes.NotFound {
-			log.Printf("getProjects[4]: %v", err)
+			log.Printf("getProjects[6]: %v", err)
 			continue
 		} else if err != nil {
-			log.Printf("getProjects[5]: %v", err)
+			log.Printf("getProjects[7]: %v", err)
 			return nil, err
 		}
 
 		var proj Project
 		if err := doc.DataTo(&proj); err != nil {
-			log.Printf("getProjects [6]: %v\n%v", spv, err)
+			log.Printf("getProjects[8]: %v\n%v", spv, err)
 			return nil, err
 		}
 
 		projlist = append(projlist, &proj)
 	}
+	log.Printf("Got %d shared projects for user %s", len(sbu), user)
 
 	return projlist, nil
 }

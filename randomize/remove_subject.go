@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"golang.org/x/net/context"
 )
 
 // RemoveSubject is the first step for removing a subject from a project.
@@ -18,8 +20,10 @@ func RemoveSubject(w http.ResponseWriter, r *http.Request) {
 
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := r.Context()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		return
 	}
 
@@ -148,11 +152,12 @@ func RemoveSubjectCompleted(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := r.Context()
 	useremail := userEmail(r)
 	pkey := r.FormValue("pkey")
+	ctx := context.Background()
+	susers, _ := getSharedUsers(ctx, pkey)
 
-	if !checkAccess(pkey, r) {
+	if !checkAccess(pkey, susers, r) {
 		msg := "You do not have access to this page."
 		rmsg := "Return"
 		messagePage(w, r, msg, rmsg, "/")
