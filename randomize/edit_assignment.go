@@ -140,15 +140,24 @@ func EditAssignmentConfirm(w http.ResponseWriter, r *http.Request) {
 		SubjectId:    subjectId,
 	}
 
-	found := false
+	found, included := false, false
 	for _, rec := range proj.RawData {
 		if rec.SubjectId == subjectId {
 			tvals.CurrentGroupName = rec.CurrentGroup
 			found = true
+			included = rec.Included
 		}
 	}
+
 	if !found {
 		msg := fmt.Sprintf("There is no subject with id '%s' in this project, the assignment was not changed.", subjectId)
+		rmsg := "Return to project"
+		messagePage(w, r, msg, rmsg, "/project_dashboard?pkey="+pkey)
+		return
+	}
+
+	if !included {
+		msg := fmt.Sprintf("Subject '%s' has been removed from the project, their group cannot be changed.", subjectId)
 		rmsg := "Return to project"
 		messagePage(w, r, msg, rmsg, "/project_dashboard?pkey="+pkey)
 		return

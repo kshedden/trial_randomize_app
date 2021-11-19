@@ -538,14 +538,15 @@ func CreateProjectStep9(w http.ResponseWriter, r *http.Request) {
 
 	// Set up the data.
 	{
-		m := len(proj.GroupNames) * len(proj.Variables)
+		// Maximum number of levels
 		n := 1
 		for _, va := range proj.Variables {
 			if len(va.Levels) > n {
 				n = len(va.Levels)
 			}
 		}
-		m *= n
+
+		m := n * len(proj.GroupNames) * len(proj.Variables)
 		log.Printf("allocated data slice of length %d", m)
 		proj.CellTotals = make([]float64, m)
 	}

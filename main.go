@@ -31,6 +31,11 @@ func init() {
 	http.HandleFunc("/copy_project", randomize.CopyProject)
 	http.HandleFunc("/copy_project_completed", randomize.CopyProjectCompleted)
 
+	// Import/export pages
+	http.HandleFunc("/export_project", randomize.ExportProject)
+	http.HandleFunc("/import_project_step1", randomize.ImportProjectStep1)
+	http.HandleFunc("/import_project_step2", randomize.ImportProjectStep2)
+
 	// Project deletion pages
 	http.HandleFunc("/delete_project_step1", randomize.DeleteProjectStep1)
 	http.HandleFunc("/delete_project_step2", randomize.DeleteProjectStep2)

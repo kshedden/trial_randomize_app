@@ -6,41 +6,13 @@ import (
 	"time"
 )
 
-func xxTestAssignments2(t *testing.T) {
-
-	va1 := Variable{
-		Name:   "BMI",
-		Levels: []string{"low", "high"},
-		Weight: 1,
-	}
-
-	proj := &Project{
-		GroupNames:    []string{"treatment", "control"},
-		Variables:     []Variable{va1},
-		CellTotals:    make([]float64, 4),
-		Assignments:   make([]int, 2),
-		SamplingRates: []float64{1, 3},
-		Bias:          5,
-	}
-
-	// Randomize 100 subjects
-	for i := 0; i < 100; i++ {
-		mpv := map[string]string{"BMI": "low"}
-		if i%2 == 1 {
-			mpv["BMI"] = "high"
-		}
-		time.Sleep(3)
-		_, err := proj.doAssignment(mpv, fmt.Sprintf("%d", i), "user")
-		if err != nil {
-			panic(err)
-		}
-	}
-}
-
+// arange returns the numerical range (maximum minus minimum)
+// for the values in the given array.
 func arange(x []float64) float64 {
 
-	var mn, mx float64
+	var mn, mx, n float64
 	for i, u := range x {
+		n += u
 		if i == 0 || u < mn {
 			mn = u
 		}
@@ -49,9 +21,10 @@ func arange(x []float64) float64 {
 		}
 	}
 
-	return mx - mn
+	return (mx - mn) / n
 }
 
+// fmax returns the maximum value of the provided array.
 func fmax(x []float64) float64 {
 
 	var v float64
@@ -63,17 +36,23 @@ func fmax(x []float64) float64 {
 	return v
 }
 
+// Returns the maximum difference in assignment counts
+// between any two arms, for people in specific levels
+// of specific variables.
 func maxrange(proj *Project) []float64 {
 
 	nvar := len(proj.Variables)
 	ngrp := len(proj.GroupNames)
-	nlev := len(proj.Variables[0].Levels)
 
 	var rv []float64
 	for v := 0; v < nvar; v++ {
+		nlev := len(proj.Variables[v].Levels)
 		for l := 0; l < nlev; l++ {
 			var xl []float64
 			for g := 0; g < ngrp; g++ {
+
+				// Number of people with level l of variable v
+				// who are assigned to group g.
 				x := proj.GetData(v, l, g)
 				xl = append(xl, x)
 			}
@@ -84,7 +63,17 @@ func maxrange(proj *Project) []float64 {
 	return rv
 }
 
-func checkAssignment3(bias int) float64 {
+func checkAssignment(bias int) float64 {
+
+	// Randomize nn subjects
+	nn := 200
+
+	// Check balance after this many subjects have been assigned
+	firstCheck := 50
+
+	// Print information when the relative balance is worse than
+	// this value.
+	rmax := 0.1
 
 	va1 := Variable{
 		Name:   "BMI",
@@ -107,34 +96,46 @@ func checkAssignment3(bias int) float64 {
 		Bias:          bias,
 	}
 
-	// Randomize 100 subjects
+	// Randomize nn subjects
 	mx := 0.0
-	for i := 0; i < 100; i++ {
-		mpv := map[string]string{"BMI": "low", "Age": "<20"}
-		if i%3 == 1 {
-			mpv["BMI"] = "high"
-			mpv["Age"] = "20-50"
-		} else if i%3 == 2 {
-			mpv["Age"] = "50+"
+	for i := 0; i < nn; i++ {
+
+		// Create the covariates for one subject
+		mpv := make(map[string]string)
+		switch i%3 {
+		   case 0:
+				mpv["BMI"] = "low"
+				mpv["Age"] = "<20"
+			case 1:
+				mpv["BMI"] = "high"
+				mpv["Age"] = "20-50"
+			case 2:
+				mpv["BMI"] = "low"
+				mpv["Age"] = "50+"
+			default:
+				panic("!!")
 		}
+
 		time.Sleep(3)
 		_, err := proj.doAssignment(mpv, fmt.Sprintf("%d", i), "user")
 		if err != nil {
 			panic(err)
 		}
 
-		if i < 10 {
+		// The balance is never good in the first few steps so skip.
+		if i < firstCheck {
 			continue
 		}
 
-		m := fmax(maxrange(proj))
-		r := m / float64(i+1)
-		if i == 10 || r > mx {
+		r := fmax(maxrange(proj))
+		if i == firstCheck || r > mx {
 			mx = r
 
-			if mx > 0.2 {
-				fmt.Printf("relative range=%v\n", mx)
-				fmt.Printf("range=%v\n", m)
+			// Only print results when the balance is poor
+			if mx > rmax {
+				fmt.Printf("i=%d\n", i)
+				fmt.Printf("%+v\n", maxrange(proj))
+				fmt.Printf("relative range=%v\n", r)
 				proj.PrintData()
 			}
 		}
@@ -143,11 +144,11 @@ func checkAssignment3(bias int) float64 {
 	return mx
 }
 
-func TestAssignments3(t *testing.T) {
+func TestAssignments(t *testing.T) {
 
-	bias := 5
+	bias := 10
 
 	for j := 0; j < 10; j++ {
-		checkAssignment3(bias)
+		checkAssignment(bias)
 	}
 }
